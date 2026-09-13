@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerenciador de Leituras</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navegação Principal -->
+  <nav class="navbar">
+    <div class="logo">📚 LeituraApp</div>
+    <div class="nav-links">
+      <button onclick="navegarPara('home')">Início</button>
+      <button onclick="navegarPara('listagem')">Minhas Obras</button>
+      <button onclick="navegarPara('crud')" class="btn-destaque">+ Gerenciar / Cadastrar</button>
+    </div>
+  </nav>
+
+  <main class="container">
+
+    <!-- TELA 1: INICIAL (HOME) -->
+    <section id="tela-home" class="tela ativa">
+      <div class="hero">
+        <h1>Seu Painel de Leitura</h1>
+        <p>Acompanhe seu progresso de livros, mangás e HQs em um só lugar.</p>
+        <div class="dash-cards">
+          <div class="dash-card">
+            <h3 id="dash-total">0</h3>
+            <p>Total de Obras</p>
+          </div>
+          <div class="dash-card">
+            <h3 id="dash-lendo">0</h3>
+            <p>Lendo Atualmente</p>
+          </div>
+          <div class="dash-card">
+            <h3 id="dash-lido">0</h3>
+            <p>Concluídos</p>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="navegarPara('crud')">Cadastrar Nova Obra</button>
+      </div>
+    </section>
+
+    <!-- TELA 2: LISTAGEM DE OBRAS -->
+    <section id="tela-listagem" class="tela">
+      <h2>Minhas Obras</h2>
+      
+      <!-- Controles de Busca, Filtro e Ordenação -->
+      <div class="controles-listagem">
+        <div class="grupo-busca">
+          <input type="text" id="input-busca" placeholder="Buscar por nome da obra..." oninput="atualizarListagem()">
+        </div>
+
+        <div class="grupo-filtros">
+          <div class="filtros-status">
+            <button onclick="alterarFiltroStatus('todas')" class="btn-filtro ativo" data-status="todas">Todas</button>
+            <button onclick="alterarFiltroStatus('A Ler')" class="btn-filtro" data-status="A Ler">A Ler</button>
+            <button onclick="alterarFiltroStatus('Lendo')" class="btn-filtro" data-status="Lendo">Lendo</button>
+            <button onclick="alterarFiltroStatus('Lido')" class="btn-filtro" data-status="Lido">Lido</button>
+          </div>
+
+          <div class="ordenacao">
+            <label for="select-ordem">Ordenar por:</label>
+            <select id="select-ordem" onchange="atualizarListagem()">
+              <option value="id-desc">Mais Recentes (ID)</option>
+              <option value="id-asc">Mais Antigos (ID)</option>
+              <option value="nome-asc">Nome (A - Z)</option>
+              <option value="nome-desc">Nome (Z - A)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div id="grid-obras" class="grid-obras">
+        <!-- Obras inseridas via JS -->
+      </div>
+    </section>
+
+    <!-- TELA 3: CRUD (FORMULÁRIO E TABELA DE GESTÃO) -->
+    <section id="tela-crud" class="tela">
+      <h2 id="form-titulo">Cadastrar / Editar Obra</h2>
+      
+      <form id="form-obra" class="form-crud">
+        <input type="hidden" id="obra-id">
+        
+        <div class="form-group">
+          <label for="nome">Nome da Obra:</label>
+          <input type="text" id="nome" required placeholder="Ex: Duna, One Piece">
+        </div>
+
+        <div class="form-group">
+          <label for="categoria">Categoria:</label>
+          <select id="categoria" required>
+            <option value="Livro">Livro</option>
+            <option value="Mangá">Mangá</option>
+            <option value="HQ">HQ</option>
+            <option value="Webtoon">Webtoon</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="capitulo">Capítulo/Página Atual:</label>
+          <input type="number" id="capitulo" min="0" value="0" required>
+        </div>
+
+        <div class="form-group">
+          <label for="status">Status da Obra:</label>
+          <select id="status" required>
+            <option value="A Ler">A Ler</option>
+            <option value="Lendo">Lendo</option>
+            <option value="Lido">Lido</option>
+          </select>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Salvar Obra</button>
+          <button type="button" class="btn-secondary" onclick="limparFormulario()">Cancelar</button>
+        </div>
+      </form>
+
+      <!-- Cabeçalho e Controles da Tabela CRUD -->
+      <div class="header-tabela">
+        <h3>Tabela de Gerenciamento</h3>
+        
+        <div class="controles-tabela">
+          <input type="text" id="input-busca-crud" placeholder="Buscar na tabela..." oninput="atualizarTabelaCRUD()">
+          
+          <select id="select-ordem-crud" onchange="atualizarTabelaCRUD()">
+            <option value="id-desc">Mais Recentes (ID)</option>
+            <option value="id-asc">Mais Antigos (ID)</option>
+            <option value="nome-asc">Nome (A - Z)</option>
+            <option value="nome-desc">Nome (Z - A)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Categoria</th>
+              <th>Cap./Pág.</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-obras-body">
+            <!-- Linhas geradas via JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
